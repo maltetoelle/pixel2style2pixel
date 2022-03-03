@@ -67,7 +67,7 @@ class pSp(nn.Module):
 				self.__load_latent_avg(ckpt, repeat=self.opts.n_styles)
 
 	def forward(self, x, resize=True, latent_mask=None, input_code=False, randomize_noise=True,
-	            inject_latent=None, return_latents=False, alpha=None):
+	            inject_latent=None, return_latents=False, alpha=None, noise_scale: float = 0.):
 		if input_code:
 			codes = x
 		else:
@@ -89,6 +89,9 @@ class pSp(nn.Module):
 						codes[:, i] = inject_latent[:, i]
 				else:
 					codes[:, i] = 0
+
+		if noise_scale:
+			codes += noise_scale * torch.randn_like(codes)
 
 		input_is_latent = not input_code
 		images, result_latent = self.decoder([codes],
