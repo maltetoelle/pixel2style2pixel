@@ -31,7 +31,7 @@ class pSp(nn.Module):
 		self.decoder = Generator(self.opts.output_size, 512, 8)
 		self.face_pool = torch.nn.AdaptiveAvgPool2d((256, 256))
 		# Load weights if needed
-		self.load_weights()
+		# self.load_weights()
 
 	def set_encoder(self):
 		if self.opts.encoder_type == 'GradualStyleEncoder':
@@ -52,15 +52,18 @@ class pSp(nn.Module):
 			self.decoder.load_state_dict(get_keys(ckpt, 'decoder'), strict=True)
 			self.__load_latent_avg(ckpt)
 		else:
-			print('Loading encoders weights from irse50!')
-			encoder_ckpt = torch.load(model_paths['ir_se50'])
-			# if input to encoder is not an RGB image, do not load the input layer weights
-			if self.opts.label_nc != 0:
-				encoder_ckpt = {k: v for k, v in encoder_ckpt.items() if "input_layer" not in k}
-			self.encoder.load_state_dict(encoder_ckpt, strict=False)
-			print('Loading decoder weights from pretrained!')
-			ckpt = torch.load(self.opts.stylegan_weights)
-			self.decoder.load_state_dict(ckpt['g_ema'], strict=False)
+			try:
+				print('Loading encoders weights from irse50!')
+				encoder_ckpt = torch.load(model_paths['ir_se50'])
+				# if input to encoder is not an RGB image, do not load the input layer weights
+				if self.opts.label_nc != 0:
+					encoder_ckpt = {k: v for k, v in encoder_ckpt.items() if "input_layer" not in k}
+				self.encoder.load_state_dict(encoder_ckpt, strict=False)
+				print('Loading decoder weights from pretrained!')
+				ckpt = torch.load(self.opts.stylegan_weights)
+				self.decoder.load_state_dict(ckpt['g_ema'], strict=False)
+			except:
+				print("no pretrained weights available")
 			if self.opts.learn_in_w:
 				self.__load_latent_avg(ckpt, repeat=1)
 			else:
