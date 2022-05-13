@@ -38,4 +38,18 @@ DATASETS = {
 		'test_source_root': dataset_paths['celeba_test'],
 		'test_target_root': dataset_paths['celeba_test'],
 	},
+	'chest_xray': {
+		'transforms': transforms_config.CADPTransforms,
+		'train_source_root': dataset_paths['chest_xray'] + '/train',
+		'train_target_root': dataset_paths['chest_xray'] + '/train',
+		'test_source_root': dataset_paths['chest_xray'] + '/test',
+		'test_target_root': dataset_paths['chest_xray'] + '/test',
+	},
+	'oct': {
+		'transforms': transforms_config.CADPTransforms,
+		'train_source_root': dataset_paths['oct'] + '/train',
+		'train_target_root': dataset_paths['oct'] + '/train',
+		'test_source_root': dataset_paths['oct'] + '/test',
+		'test_target_root': dataset_paths['oct'] + '/test',
+	}
 }

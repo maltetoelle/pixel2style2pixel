@@ -34,9 +34,11 @@ class Coach:
 
 		# Initialize network
 		self.net = pSp(self.opts).to(self.device)
+		if hasattr(self.opts, "start_checkpoint_path") and self.opts.start_checkpoint_path is not None:
+			self.net.load_state_dict(torch.load(self.opts.start_checkpoint_path)["state_dict"])
 
 		# Estimate latent_avg via dense sampling if latent_avg is not available
-		if self.net.latent_avg is None:
+		if not hasattr(self.net, "latent_avg") or self.net.latent_avg is None:
 			self.net.latent_avg = self.net.decoder.mean_latent(int(1e5))[0].detach()
 
 		# Initialize loss
@@ -184,6 +186,9 @@ class Coach:
 		if self.opts.dataset_type not in data_configs.DATASETS.keys():
 			Exception(f'{self.opts.dataset_type} is not a valid dataset_type')
 		print(f'Loading dataset for {self.opts.dataset_type}')
+		# dataset_args = data_configs.DATASETS[self.opts.dataset_type]
+		# train_dataset = torch.load(dataset_args["train_source_root"])
+		# test_dataset = torch.load(dataset_args)
 		dataset_args = data_configs.DATASETS[self.opts.dataset_type]
 		transforms_dict = dataset_args['transforms'](self.opts).get_transforms()
 		train_dataset = ImagesDataset(source_root=dataset_args['train_source_root'],

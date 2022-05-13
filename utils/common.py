@@ -20,6 +20,8 @@ def tensor2im(var):
 	var[var < 0] = 0
 	var[var > 1] = 1
 	var = var * 255
+	if var.shape[-1] == 1:
+		var = var[...,0]
 	return Image.fromarray(var.astype('uint8'))
 
 
