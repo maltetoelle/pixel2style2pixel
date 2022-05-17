@@ -6,8 +6,8 @@ dataset_paths = {
 	'celeba_train_segmentation': '',
 	'celeba_test_segmentation': '',
 	'ffhq': '',
-	'chest_xray': '/mnt/ssd/data/chest_xray',
-	'oct': '/mnt/ssd/data/oct'
+	'chest_xray': '/content/medData/CellData/chest_xray',
+	'oct': '/content/medData/CellData/OCT'
 }
 
 model_paths = {
